@@ -1,12 +1,42 @@
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git colored-man-pages)
 
-# Google Cloud SDK
-export PATH=/opt/homebrew/share/google-cloud-sdk/bin:"$PATH"
-export CLOUDSDK_PYTHON=$(which python3.12 2>/dev/null || which python3)
+zstyle ':omz:update' mode reminder
+if [ -d "$ZSH" ]; then
+  source "$ZSH/oh-my-zsh.sh"
+else
+  autoload -Uz vcs_info
+  precmd() { vcs_info }
+  zstyle ':vcs_info:git:*' formats '(%b)'
+  setopt PROMPT_SUBST
+  PROMPT='%F{green}%n@%m%f:%F{blue}%~%f%F{yellow}${vcs_info_msg_0_}%f%# '
+  autoload -Uz compinit && compinit
+fi
 
-# Added by Antigravity
-export PATH="/Users/ehunigan/.antigravity/antigravity/bin:$PATH"
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=20000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
 
-# Added by Antigravity IDE
-export PATH="/Users/ehunigan/.antigravity-ide/antigravity-ide/bin:$PATH"
+if ls --color=auto / >/dev/null 2>&1; then
+  alias ls='ls --color=auto'
+else
+  alias ls='ls -G'
+fi
+alias ll='ls -alF'
+alias la='ls -A'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias gccw='gcc -Wall -Wextra -g'
+alias gdb='gdb -q'
+alias grep='grep --color=auto'
 
-export PATH="$HOME/bin:$PATH"
+export EDITOR=vim
+export PAGER=less
+if [ -d "$HOME/bin" ]; then
+  PATH="$HOME/bin:$PATH"
+fi
